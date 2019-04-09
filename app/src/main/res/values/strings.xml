@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Recettes Gâteaux</string>
+    <string name="volume_controle">Volume control</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="start">Start</string>
+    <string name="action_settings">Setting</string>
+    <string name="action_audio">audio</string>
+</resources>
