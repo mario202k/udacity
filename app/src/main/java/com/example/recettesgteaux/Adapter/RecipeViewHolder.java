@@ -58,8 +58,8 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
     ProgressBar mProgressBar;
     @BindView(R.id.exo_artwork)
     ImageView mImageViewArtWork;
-    @BindView(R.id.exo_shutter)
-    View mView;
+//    @BindView(R.id.exo_shutter)
+//    View mView;
     @BindView(R.id.iv_play)
     ImageView mImageViewPlay;
     @BindView(R.id.exo_content_frame)
@@ -95,26 +95,13 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
 
     }
 
-    public void setSimpleExoPlayer(SimpleExoPlayer simpleExoPlayer) {
-        mSimpleExoPlayer = simpleExoPlayer;
-
-        mPlayerView.requestFocus();
-        mPlayerView.setPlayer(mSimpleExoPlayer);
-
-        mSimpleExoPlayer.addListener(this);
-
-        mPlayerView.setUseController(true);
-        mPlayerView.hideController();
-
-        //pour sauvegader
-        mUpdatePlayerAndHolder.onUpdatePlayerAndHolder(mSimpleExoPlayer,getAdapterPosition());
-    }
 
     public RecipeViewHolder(@NonNull View itemView) {
         super(itemView);
         mContext = itemView.getContext();
         ButterKnife.bind(this, itemView);
         parent = itemView;
+
     }
 
 
@@ -131,12 +118,8 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
 
         if(!mSimpleExoPlayer.getPlayWhenReady()){
 
-            if(mSimpleExoPlayer == null){
-                mSimpleExoPlayer = newExoPlayer(mContext);
-                preparePlayer();
-            }
-
             mSimpleExoPlayer.setPlayWhenReady(true);
+
         }else {
             mSimpleExoPlayer.setPlayWhenReady(false);
             mPlayerView.setUseController(true);
@@ -202,11 +185,6 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
         this.idDrawable = idDrawable;
         Log.i(TAG,"bind!!!!!!!!!!"+getAdapterPosition());
 
-//        if(mSimpleExoPlayer == null){
-//            mSimpleExoPlayer = newExoPlayer(mContext);
-//            preparePlayer();
-//        }
-
 
     }
 
@@ -218,14 +196,18 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(Uri.parse(mediaUrl));
 
-            mPlayerView.requestFocus();
+
+
+
             mPlayerView.setPlayer(mSimpleExoPlayer);
 
             mSimpleExoPlayer.prepare(videoSource);
+
             mSimpleExoPlayer.addListener(this);
 
             mPlayerView.setUseController(true);
             mPlayerView.hideController();
+
 
             //pour sauvegader
             mUpdatePlayerAndHolder.onUpdatePlayerAndHolder(mSimpleExoPlayer,getAdapterPosition());
@@ -236,10 +218,9 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
     public SimpleExoPlayer newExoPlayer(Context context) {
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector =
-                new DefaultTrackSelector(videoTrackSelectionFactory);
+        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
 
         return ExoPlayerFactory.newSimpleInstance(context, trackSelector);
     }
@@ -295,11 +276,15 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements Player.
                     mImageViewArtWork.setVisibility(View.VISIBLE);
                     mImageViewPlay.setVisibility(View.VISIBLE);
                     mPlayerView.hideController();
+
+
                 }else{
 
-                    mImageViewArtWork.setVisibility(View.INVISIBLE);
-                    mImageViewPlay.setVisibility(View.INVISIBLE);
+                    mImageViewArtWork.setVisibility(View.GONE);
+                    mImageViewPlay.setVisibility(View.GONE);
                     mPlayerView.showController();
+
+
 
                 }
 

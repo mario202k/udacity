@@ -2,10 +2,10 @@ package com.example.recettesgteaux.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 
 import com.example.recettesgteaux.Adapter.RecipeAdapter;
@@ -22,7 +22,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class RecipeListFragment extends Fragment {
     private static String TAG = RecipeListFragment.class.getSimpleName();
@@ -108,14 +107,16 @@ public class RecipeListFragment extends Fragment {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//
-//        int orientation = newConfig.orientation;
-//
-//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            mRecyclerView.resetPlayer();
-//        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            mRecyclerView.resetPlayer();
-//        }
+
+        int orientation = newConfig.orientation;
+
+
+        Log.d(TAG, "!!!!!!!!!!!!!!!"+orientation);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT || orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            if(mRecyclerView.isPlayWhenReady())
+                mRecyclerView.resetPlayer();
+        }
     }
 
     @Override

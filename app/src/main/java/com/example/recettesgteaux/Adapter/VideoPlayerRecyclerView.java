@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 
 import com.example.recettesgteaux.remote_data_source.models.Recipe;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 
@@ -39,7 +42,7 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
     private Context mContext;
     private int playPosition = -1;
 
-    private boolean playWhenReady;
+    private boolean playWhenReady ;
     private int mCurrentWindow;
     private long mPlaybackPosition;
     private int mNumberHolder;
@@ -59,6 +62,9 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
 
         mGridLayoutManager = new GridLayoutManager(context, 1);
         setLayoutManager(mGridLayoutManager);
+
+
+
 
         if (attributeSet != null) {
             // list the attributes we want to fetch
@@ -84,10 +90,7 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Log.d(TAG, "onScrollStateChanged: called.");
-
-
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && mGridLayoutManager.getSpanCount() ==1) {
 
                     // There's a special case when the end of the list has been reached.
                     // Need to handle that with this bit of logic
@@ -103,16 +106,12 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                Log.i(TAG,"onScrolled!!!!!!!!!!!!!!!!");
-                resetPlayer();
             }
         });
 
         addOnChildAttachStateChangeListener(new OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
-
-
 
 
             }
@@ -201,7 +200,9 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
         }
 
         mSimpleExoPlayer = mRecipeViewHolder.mSimpleExoPlayer;
+        pauseAllOtherPlayer();
         mRecipeViewHolder.onClickPlayerView();
+
 
     }
 
@@ -274,6 +275,7 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
 
     public void resetPlayer() {
         Log.i(TAG,"mmmmmm  "+mNumberHolder);
+
         RecipeViewHolder holder =(RecipeViewHolder) getChildAt(mNumberHolder).getTag();
 
         holder.resetPlayer(mCurrentWindow,mPlaybackPosition,playWhenReady);
@@ -302,11 +304,17 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
 
             RecipeViewHolder holder =(RecipeViewHolder) getChildViewHolder(getChildAt(i));
 
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.mPlayerView.getLayoutParams();
+
+            params.height =holder.mImageViewArtWork.getHeight();
+
             if(mSimpleExoPlayer != null && holder.mSimpleExoPlayer != mSimpleExoPlayer && holder.mSimpleExoPlayer!= null && holder.mSimpleExoPlayer.getPlayWhenReady()){
 
                 holder.mSimpleExoPlayer.setPlayWhenReady(false);
                 holder.mSimpleExoPlayer.release();
                 holder.mSimpleExoPlayer = null;
+
+                holder.mPlayerView.setLayoutParams(params);
             }
         }
     }
@@ -318,6 +326,12 @@ public class VideoPlayerRecyclerView extends RecyclerView implements RecipeViewH
         mSimpleExoPlayer = simpleExoPlayer;
 
         pauseAllOtherPlayer();
+
+//        RecipeViewHolder holder =(RecipeViewHolder) getChildViewHolder(getChildAt(numberHolder));
+
+//        GridLayout.LayoutParams params = (GridLayout.LayoutParams) holder.mPlayerView.getLayoutParams();
+//        params.height = (parent.getWidth()/parent.getColumnCount()) -params.rightMargin - params.leftMargin;
+//        child.setLayoutParams(params);
 
     }
 }
